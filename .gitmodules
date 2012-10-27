@@ -1,0 +1,15 @@
+[submodule ".submodules/CuteControllers"]
+	path = .submodules/CuteControllers
+	url = git://github.com/tylermenezes/CuteControllers.git
+[submodule ".submodules/FastForms"]
+	path = .submodules/FastForms
+	url = git://github.com/tylermenezes/FastForms.git
+[submodule ".submodules/TinyDb"]
+	path = .submodules/TinyDb
+	url = git://github.com/tylermenezes/TinyDb.git
+[submodule ".submodules/AutoAB"]
+	path = .submodules/AutoAB
+	url = git://github.com/tylermenezes/AutoAB.git
+[submodule ".submodules/SplClassLoader"]
+	path = .submodules/SplClassLoader
+	url = git://gist.github.com/426304.git
