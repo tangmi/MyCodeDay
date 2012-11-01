@@ -27,4 +27,28 @@ class Event extends \TinyDb\Orm
     protected $hero_foreground_color;
 
     protected $eventbrite_id;
+
+    public static function get_default_event()
+    {
+        $events = new \TinyDb\Collection('\StudentRND\CodeDay\Models\Event', \TinyDb\Sql::create()
+                                     ->select('*')
+                                     ->from(static::$table_name)
+                                     ->where('end_time >= DATE_ADD(NOW(), INTERVAL 72 HOUR)')
+                                     ->order_by('start_time')
+                                     ->limit(1));
+
+        if (count($events) > 0) {
+            return $events[0];
+        } else {
+            throw new \Exception("No upcoming CodeDays.");
+        }
+    }
+
+    public static function get_all_events()
+    {
+        return new \TinyDb\Collection('\StudentRND\CodeDay\Models\Event', \TinyDb\Sql::create()
+                                     ->select('*')
+                                     ->from(static::$table_name)
+                                     ->order_by('start_time'));
+    }
 }

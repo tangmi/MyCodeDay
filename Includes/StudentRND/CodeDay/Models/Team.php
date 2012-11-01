@@ -9,14 +9,52 @@ class Team extends \TinyDb\Orm
     public static $table_name = 'teams';
     public static $primary_key = 'teamID';
 
+    public static function create(Event $event, $name)
+    {
+        if (static::check_team_name($event, $name)) {
+            throw new \Exception("Team exists.");
+        }
+
+        return parent::create(array(
+            'name' => $name,
+            'eventID' => $event->eventID
+        ));
+    }
+
+    public static function check_team_name(Event $event, $name)
+    {
+        return static::get_all_teams($event)->contains(function($team) use ($name) {
+            return $team->name === $name;
+        });
+    }
+
+    public function get_all_teams(Event $event)
+    {
+        return new \TinyDb\Collection('\StudentRND\CodeDay\Models\Team', \TinyDb\Sql::create()
+                                  ->select('*')
+                                  ->from(static::$table_name)
+                                  ->where('eventID = ?', $event->eventID));
+    }
+
     protected $teamID;
 
     // Stuff the team can set
     protected $name;
+    public function __validate_name($val)
+    {
+        $me = $this;
+        return !static::get_all_teams($this->event)->contains(function($team) use ($val, $me) {
+            return ($team->teamID !== $me->teamID &&
+                    $team->name === $val);
+        });
+    }
     protected $description;
     protected $website_link;
+    public $__optional_website_link = TRUE;
+    public $__validate_website_link = 'url';
     protected $play_link;
-    protected $download_link;
+    public $__optional_play_link = TRUE;
+    public $__validate_play_link = 'url';
 
     // Stuff organizers will set
     protected $video_link;
@@ -30,13 +68,36 @@ class Team extends \TinyDb\Orm
         return new Event($this->eventID);
     }
 
-    public function __get_teams()
+    public function join(Registrant $registrant)
     {
-        return \TinyDb\Collection('\StudentRND\CodeDay\Models\Mappings\RegistrantTeam', \TinyDb\Sql::create()
+        Mappings\RegistrantTeam::create($registrant, $this);
+    }
+
+    public function depart(Registrant $registrant)
+    {
+        try {
+            $registrant_mapping = new Mappings\RegistrantTeam(array(
+                'registrantID' => $registrant->registrantID,
+                'teamID' => $this->teamID
+            ));
+
+            $registrant_mapping->delete();
+        } catch (\TinyDb\NoRecordException $ex) {
+            throw new \Exception("That person wasn't on this team");
+        }
+
+
+    }
+
+    public function __get_registrants()
+    {
+        $registrants = new \TinyDb\Collection('\StudentRND\CodeDay\Models\Mappings\RegistrantTeam', \TinyDb\Sql::create()
                                   ->select('*')
                                   ->from(Mappings\RegistrantTeam::$table_name)
-                                  ->where('teamID = ?', $this->teamID))->each(function($mapping){
-                                    return $mapping->registrant;
-                                  });
+                                  ->where('teamID = ?', $this->teamID));
+
+        return $registrants->each(function($mapping){
+                return $mapping->registrant;
+              });
     }
 }
