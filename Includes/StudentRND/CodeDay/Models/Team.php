@@ -9,6 +9,7 @@ class Team extends \TinyDb\Orm
     public static $table_name = 'teams';
     public static $primary_key = 'teamID';
 
+    /* Static functions */
     public static function create(Event $event, $name)
     {
         if (static::check_team_name($event, $name)) {
@@ -28,7 +29,7 @@ class Team extends \TinyDb\Orm
         });
     }
 
-    public function get_all_teams(Event $event)
+    public static function get_all_teams(Event $event)
     {
         return new \TinyDb\Collection('\StudentRND\CodeDay\Models\Team', \TinyDb\Sql::create()
                                   ->select('*')
@@ -36,39 +37,8 @@ class Team extends \TinyDb\Orm
                                   ->where('eventID = ?', $event->eventID));
     }
 
-    protected $teamID;
-
-    // Stuff the team can set
-    protected $name;
-    public function __validate_name($val)
-    {
-        $me = $this;
-        return !static::get_all_teams($this->event)->contains(function($team) use ($val, $me) {
-            return ($team->teamID !== $me->teamID &&
-                    $team->name === $val);
-        });
-    }
-    protected $description;
-    protected $website_link;
-    public $__optional_website_link = TRUE;
-    public $__validate_website_link = 'url';
-    protected $play_link;
-    public $__optional_play_link = TRUE;
-    public $__validate_play_link = 'url';
-
-    // Stuff organizers will set
-    protected $video_link;
-    protected $presentation_link;
-    protected $team_picture_url;
-
-
-    protected $eventID;
-    public function __get_event()
-    {
-        return new Event($this->eventID);
-    }
-
-    public function join(Registrant $registrant)
+    /* Functions */
+     public function join(Registrant $registrant)
     {
         Mappings\RegistrantTeam::create($registrant, $this);
     }
@@ -99,5 +69,38 @@ class Team extends \TinyDb\Orm
         return $registrants->each(function($mapping){
                 return $mapping->registrant;
               });
+    }
+
+    /* Properties */
+    protected $teamID;
+
+    // Stuff the team can set
+    protected $name;
+    public function __validate_name($val)
+    {
+        $me = $this;
+        return !static::get_all_teams($this->event)->contains(function($team) use ($val, $me) {
+            return ($team->teamID !== $me->teamID &&
+                    $team->name === $val);
+        });
+    }
+    protected $description;
+    protected $website_link;
+    public $__optional_website_link = TRUE;
+    public $__validate_website_link = 'url';
+    protected $play_link;
+    public $__optional_play_link = TRUE;
+    public $__validate_play_link = 'url';
+
+    // Stuff organizers will set
+    protected $video_link;
+    protected $presentation_link;
+    protected $team_picture_url;
+
+
+    protected $eventID;
+    public function __get_event()
+    {
+        return new Event($this->eventID);
     }
 }

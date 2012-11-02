@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>CodeDay {{ event.name }} - Presented by StudentRND</title>
+        <meta property="og:title" content="CodeDay {{ event.name }} (presented by StudentRND)"/>
+
+        <meta name="description" content="{{ event.tagline }}" />
+        <meta property="og:description" content="{{ event.time_period_string }} at {{ event.location_name }}. {{ event.tagline }}"/>
+
+        <link rel="img_src" href="http://{{ event.name|lower }}.codeday.org/assets/img/preview.jpg" />
+        <meta property="og:image" content="http://{{ event.name|lower }}.codeday.org/assets/img/preview.jpg" />
+
+        <meta property="og:type" content="activity"/>
+        <meta property="fb:app_id" content="254735791261112"/>
+        <meta property="fb:admins" content="529109178"/>
+
+
+        <link rel="stylesheet" href="/assets/css/bootstrap.css"/>
+        <link rel="stylesheet" type="text/css" href="/assets/css/view.css"/>
+
+        {# CodeDay-specific colors #}
+        <style type="text/css">
+            .header .container h1 {
+                background: rgba({{ event.color_rgb.r }}, {{ event.color_rgb.g }}, {{ event.color_rgb.b }}, 0.7);
+            }
+
+            .header .container h2,
+            .brand span,
+            a,
+            a:hover,
+            .navbar .nav > li.active > a {
+                color: #{{ event.accent_color }};
+            }
+
+            .brand img {
+                background-color: #{{ event.color }};
+            }
+
+            .header {
+                background-image: url('{{ event.hero_background_url }}');
+            }
+
+            .table-striped tbody tr:nth-child(odd) td, .table-striped tbody tr:nth-child(odd) th {
+                background-color: #{{ accent_color_light }};
+            }
+
+            a,
+            a:hover {
+                border-bottom-color: #{{ event.accent_color }};
+            }
+
+            ::selection {
+                background: #{{ event.color }};
+                color: #fff;
+            }
+            ::-moz-selection {
+                background: #{{ event.color }};
+                color: #fff;
+            }
+        </style>
+    </head>
+
+    <body>
+        {# Navigation #}
+        <div class="navbar navbar-fixed-top">
+            <div class="navbar-inner">
+                <div class="container">
+                    <a class="brand" href="http://codeday.org/">
+                        <img src="/assets/img/codeday-logo-chameleon.png" />
+                        CodeDay
+                    </a>
+                    <a class="brand" href="/">
+                        {{ event.name }}
+                    </a>
+                    <div class="nav-collapse">
+                        {% include "nav.html" %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {# Header #}
+        <div class="header">
+            <div class="container">
+                <h1>CodeDay {{ event.name }}</h1>
+                <h2>{{ event.tagline }}</h2>
+                <hr class="clearfix" />
+                <a class="btn" href="/register.html">Register Today!</a>
+                <p>{{ event.time_period_string }} at <a href="{{ event.location_map_link }}">{{ event.location_name }}</a></p>
+            </div>
+        </div>
+
+        {# Main Content #}
+        <div class="container">
+            {% block content %}
+            {% endblock %}
+        </div>
+
+        {# Footer #}
+        <footer>
+            <div class="container">
+                <p class="pull-left">
+                    Copyright &copy; 2012 Student Research and Development. All rights reserved.
+                </p>
+                <p class="pull-right">
+                    <a href="http://github.com/StudentRND/MyCodeDay">Fork me on Github!</a>
+                </p>
+            </div>
+        </footer>
+
+        {# Scripts #}
+        <div id="fb-root"></div>
+        <script>(function(d, s, id) {
+          var js, fjs = d.getElementsByTagName(s)[0];
+          if (d.getElementById(id)) return;
+          js = d.createElement(s); js.id = id;
+          js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=485616084806180";
+          fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));</script>
+
+        <script type="text/javascript">
+          var _gaq = _gaq || [];
+          _gaq.push(['_setAccount', 'UA-8868191-6']);
+          _gaq.push(['_trackPageview']);
+
+          (function() {
+            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+          })();
+        </script>
+    </body>
+</html>

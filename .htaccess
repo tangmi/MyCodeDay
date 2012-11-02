@@ -1,15 +1,19 @@
 <IfModule mod_rewrite.c>
-RewriteEngine On
-
+    RewriteEngine On
     # CodeDay Global Page
 #    RewriteCond %{REQUEST_FILENAME} !-f
 #    RewriteCond %{HTTP_HOST} ^(www\.)?codeday\.org+$
 #    RewriteRule ^([\w\.]*)$ index.php/view/global/$1 [QSA,L]
 
-    # MyCodeDay
+    # My.CodeDay - Not a thing yet...
+#    RewriteCond %{REQUEST_FILENAME} !-f
+#    RewriteCond %{HTTP_HOST} ^my\.codeday\.org+$
+#    RewriteRule ^(.*)$ index.php/my/$1 [QSA,L]
+
+    # Local.My.CodeDay
     RewriteCond %{REQUEST_FILENAME} !-f
-    RewriteCond %{HTTP_HOST} ^my\.codeday\.org+$
-    RewriteRule ^(.*)$ index.php/my/$1 [QSA,L]
+    RewriteCond %{HTTP_HOST} ^local\.my\.codeday\.org+$
+    RewriteRule ^(.*)$ index.php/$1 [QSA,L]
 
     # Specific CodeDay
 #    RewriteCond %{REQUEST_FILENAME} !-f

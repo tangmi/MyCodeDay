@@ -1,19 +1,15 @@
 <?php
 
-namespace StudentRND\CodeDay\Models;
+namespace StudentRND\CodeDay\Models\Event;
 
-class AwardCategory extends \TinyDb\Orm
+use \StudentRND\CodeDay\Models;
+
+class AwardCategory extends Models\EventItem
 {
     public static $table_name = 'awardcategories';
     public static $primary_key = 'awardcategoryID';
 
     protected $awardcategoryID;
-
-    protected $eventID;
-    public function __get_event()
-    {
-        return new Event($this->event);
-    }
 
     public function __get_awards()
     {

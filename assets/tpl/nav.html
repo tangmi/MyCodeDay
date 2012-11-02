@@ -1,0 +1,50 @@
+{% set nav = [
+    { 'name': 'Home', 'uri': '/index.html' },
+    { 'name': 'Schedule', 'uri': '/schedule.html' }
+    ] %}
+
+{# Show the teams link if the event has started #}
+{% if (event.has_started or is_logged_in or config.app.local) %}
+    {% set nav = nav|merge([{ 'name': 'Resources', 'uri': '/resources.html'}]) %}
+    {% set nav = nav|merge([{ 'name': 'Videos', 'uri': '/videos.html'}]) %}
+    {% set nav = nav|merge([{ 'name': 'Teams', 'uri': '/teams.html'}]) %}
+{% endif %}
+
+{# Show main nav links #}
+{% if (config.app.local or is_logged_in) %}
+    {% set nav = nav|merge([{ 'name': 'Rules', 'uri': '/rules.html'}]) %}
+    {% if (is_logged_in) %}
+        {% set nav = nav|merge([{ 'name': 'Me', 'uri': '/me.html'}]) %}
+        {% if (registrant.is_organizer) %}
+            {% set nav = nav|merge([{ 'name': 'Admin', 'uri': '/admin.html'}]) %}
+        {% endif %}
+    {% else %}
+        {% set nav = nav|merge([{ 'name': 'Login', 'uri': '/login.html'}]) %}
+    {% endif %}
+
+{% else %}
+    {% set nav = nav|merge([{ 'name': 'FAQ', 'uri': '/faq.html'}]) %}
+{% endif %}
+
+{% if (not(config.app.local or event.has_ended)) %}
+    {% set nav = nav|merge([{ 'name': 'Register', 'uri': '/register.html' }]) %}
+{% endif %}
+
+{# Show the past events except when the user is logged in #}
+{% if (not(is_logged_in)) %}
+    {% set nav = nav|merge([{ 'name': 'Past Events', 'uri': 'http://codeday.org/past.html?city=' ~ event.name|lower }]) %}
+{% endif %}
+
+<ul class="nav pull-right">
+    {% for page in nav %}
+        {% if (page.uri == current_page) %}
+            <li class="active">
+        {% else %}
+            <li>
+        {% endif %}
+            <a href="{{ page.uri }}">
+                {{ page.name }}
+            </a>
+        </li>
+    {% endfor %}
+</ul>

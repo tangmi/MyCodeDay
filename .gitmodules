@@ -13,3 +13,6 @@
 [submodule ".submodules/SplClassLoader"]
 	path = .submodules/SplClassLoader
 	url = git://gist.github.com/426304.git
+[submodule ".submodules/Twig"]
+	path = .submodules/Twig
+	url = git://github.com/fabpot/Twig.git
