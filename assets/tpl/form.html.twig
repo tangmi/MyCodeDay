@@ -1,0 +1,16 @@
+{% extends "template.html.twig" %}
+
+{% block content %}
+    <span class="span12 box">
+        <form method="post">
+            {% set x = form.render('bootstrap', instance) %}
+            <input type="submit" class="btn btn-success" value="Make it so!" />
+        </form>
+
+        {% if instance %}
+            <form method="post" action="delete?{{id_string}}">
+                <input type="submit" class="btn btn-danger" value="Delete" />
+            </form>
+        {%endif %}
+    </span>
+{% endblock %}

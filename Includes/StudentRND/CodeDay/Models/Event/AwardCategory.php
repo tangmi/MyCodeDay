@@ -6,7 +6,7 @@ use \StudentRND\CodeDay\Models;
 
 class AwardCategory extends Models\EventItem
 {
-    public static $table_name = 'awardcategories';
+    public static $table_name = 'events_awardcategories';
     public static $primary_key = 'awardcategoryID';
 
     protected $awardcategoryID;

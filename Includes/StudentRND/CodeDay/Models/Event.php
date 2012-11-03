@@ -25,6 +25,9 @@ class Event extends \TinyDb\Orm
     protected $hero_background_url;
     protected $color;
 
+    protected $hook;
+    protected $hook_details;
+
     protected $eventbrite_id;
 
     public function __get_location_map_link()
@@ -164,6 +167,38 @@ class Event extends \TinyDb\Orm
                                         ->select('*')
                                         ->from(Team::$table_name)
                                         ->where('eventID = ?', $this->eventID));
+    }
+
+    public function __get_award_categories()
+    {
+        return new \TinyDb\Collection('\StudentRND\CodeDay\Models\Event\AwardCategory', \TinyDb\Sql::create()
+                                      ->select('*')
+                                      ->from(Event\AwardCategory::$table_name)
+                                      ->where('eventID = ?', $this->eventID));
+    }
+
+    public function __get_faqs()
+    {
+        return new \TinyDb\Collection('\StudentRND\CodeDay\Models\Event\Faq', \TinyDb\Sql::create()
+                                      ->select('*')
+                                      ->from(Event\Faq::$table_name)
+                                      ->where('eventID = ?', $this->eventID));
+    }
+
+    public function __get_sponsors()
+    {
+        return new \TinyDb\Collection('\StudentRND\CodeDay\Models\Event\Sponsor', \TinyDb\Sql::create()
+                                      ->select('*')
+                                      ->from(Event\Sponsor::$table_name)
+                                      ->where('eventID = ?', $this->eventID));
+    }
+
+    public function __get_workshops()
+    {
+        return new \TinyDb\Collection('\StudentRND\CodeDay\Models\Event\Workshop', \TinyDb\Sql::create()
+                                      ->select('*')
+                                      ->from(Event\Workshop::$table_name)
+                                      ->where('eventID = ?', $this->eventID));
     }
 
     /**

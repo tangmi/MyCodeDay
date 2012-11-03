@@ -1,0 +1,72 @@
+{% extends "template.html.twig" %}
+
+{% block content %}
+    <div class="row nopad homeboxes">
+
+        {# Left Column #}
+        <div class="span6">
+
+            {# Hook #}
+            <div class="span6 box">
+                <h1>{{ event.hook }}</h1>
+                <img src="https://www.filepicker.io/api/file/RyaUxTWiR3SyAB3NQiIn/convert?fit=crop&h=279&w=418" />
+                <p>{{ event.hook_details|raw }}</p>
+            </div>
+
+            {# Awards #}
+            <div class="span6 box">
+                <h1>Play To Your Strengths</h1>
+                <img src="https://www.filepicker.io/api/file/UxybmFQXR0uq1dMCuG00/convert?fit=crop&h=279&w=418" />
+                <p>Compete for awards in:</p>
+                <ul>
+                    {% for awardcategory in event.award_categories %}
+                        <li>
+                            {% if awardcategory.is_ranked %}
+                            Best
+                            {% endif %}
+                            {{ awardcategory.name }}
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+        </div>
+
+        {# Right Column #}
+        <div class="span6">
+
+            {# What is CodeDay / Social #}
+            <div class="span6 box">
+                <h1>What is CodeDay?</h1>
+                <img src="https://www.filepicker.io/api/file/rMfeBYVwSjyz_62kb4iW/convert?fit=crop&amp;h=279&amp;w=418" />
+                <p>CodeDay is an amazing 24-hour event where students who love technology hang out and code.</p>
+                <p>It's fun for both total beginners and advanced programmers.</p>
+                <p>
+                </p>
+                <div class="social">
+                    <a href="https://twitter.com/share" class="twitter-share-button" data-lang="en">Tweet</a>
+                    <div class="fb-like" data-href="http://{{ event.name|lower }}.codeday.org/" data-layout="button_count" data-send="false" data-width="450" data-show-faces="true" data-action="recommend"></div>
+                    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+                <hr class="clearfix" />
+                </div>
+            </div>
+
+            {# Thank the Sponsors #}
+            <div class="span6 box">
+                <h1>Be Happy!</h1>
+                <img src="https://www.filepicker.io/api/file/cAvqKporSjqIIlhJmTBj/convert?fit=crop&amp;h=279&amp;w=418" />
+                <p>
+                    At CodeDay, we'll have:
+                    <ul>
+                        <li>Free food!</li>
+                        <li>Awesome swag!</li>
+                        <li>Cool prizes and giveaways!</li>
+                        <li>An amazing atmosphere!</li>
+                    </ul>
+                </p>
+                <p>Thank the sponsors for making this an amazing event!</p>
+            </div>
+        </div>
+
+    </div>
+{% endblock %}

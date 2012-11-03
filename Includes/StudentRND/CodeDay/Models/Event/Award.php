@@ -6,11 +6,10 @@ use \StudentRND\CodeDay\Models;
 
 class Award extends Models\EventItem
 {
-    public static $table_name = 'awards';
+    public static $table_name = 'events_awardcategories_awards';
     public static $primary_key = 'awardID';
 
     protected $awardID;
-    protected $rank;
 
     protected $awardcategoryID;
     public function __get_awardcategory()
@@ -18,6 +17,7 @@ class Award extends Models\EventItem
         return new AwardCategory($this->awardcategoryID);
     }
 
+    protected $rank;
     protected $teamID;
     public function __get_team()
     {

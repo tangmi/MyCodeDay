@@ -11,11 +11,10 @@ use \StudentRND\CodeDay\Models\Mappings;
  * Controller base for an event. Automatically infers the event from the domain, and loads it into
  * $this->current_codeday.
  */
-class EventController extends \CuteControllers\Base\Rest
+class EventCrudFormController extends \CuteControllers\Base\CrudFormController
 {
     public function __construct(\CuteControllers\Request $request, $action, $positional_args)
     {
-        parent::__construct($request, $action, $positional_args);
         $this->all_codedays = new \TinyDb\Collection('\StudentRND\CodeDay\Models\Event', \TinyDb\Sql::create()
                                                      ->select('*')
                                                      ->from(Models\Event::$table_name)
@@ -33,9 +32,9 @@ class EventController extends \CuteControllers\Base\Rest
                                                      ->where('`end_time` < NOW()')
                                                      ->order_by('`end_time` DESC'));
 
-        $name = $this->request->request('cd_name');
-        $year = $this->request->request('cd_year');
-        $month = $this->request->request('cd_month');
+        $name = $request->request('cd_name');
+        $year = $request->request('cd_year');
+        $month = $request->request('cd_month');
 
         if ($name) {
             $this->event = $this->all_codedays->find_one(function($event) use ($month, $year, $name) {
@@ -51,6 +50,8 @@ class EventController extends \CuteControllers\Base\Rest
             $this->event = Models\Event::get_default_event();
         }
 
+        $this->static_values = array('eventID' => $this->event->eventID);
+
         CodeDay\Application::$twig->addGlobal('event', $this->event);
         CodeDay\Application::$twig->addGlobal('is_logged_in', Models\Registrant::is_logged_in());
         if (Models\Registrant::is_logged_in()) {
@@ -60,6 +61,8 @@ class EventController extends \CuteControllers\Base\Rest
         if (!$this->event) {
             CodeDay\Application::$twig->render('404.html');
         }
+
+        parent::__construct($request, $action, $positional_args);
 
     }
 

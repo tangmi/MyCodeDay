@@ -1,0 +1,104 @@
+{% extends "template.html.twig" %}
+
+{% block content %}
+    <div class="row">
+        <div class="span12 box">
+
+            {# Event format #}
+            <div class="span5">
+                <table class="table table-striped">
+                    <h2> Event Schedule </h2>
+                    <thead>
+                        <tr>
+                            <th>Time</th>
+                            <th>Event</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>11:30 AM</td>
+                            <td>Venue Opens</td>
+                        </tr>
+                        <tr>
+                            <td>12 PM</td>
+                            <td>Kickoff Talk &amp; Pizza</td>
+                        </tr>
+                        <tr>
+                            <td>1 PM</td>
+                            <td>Pitch Ideas and Form Teams</td>
+                        </tr>
+                        <tr>
+                            <td>7 PM</td>
+                            <td>Dinner</td>
+                        </tr>
+                        <tr>
+                            <td>12 AM</td>
+                            <td>Midnight Snack</td>
+                        </tr>
+                        <tr>
+                            <td>7 AM</td>
+                            <td>Breakfast</td>
+                        </tr>
+                        <tr>
+                            <td>9 AM</td>
+                            <td>Judges walk around &amp; talk with teams</td>
+                        </tr>
+                        <tr>
+                            <td>10 AM</td>
+                            <td>Presentations</td>
+                        </tr>
+                        <tr>
+                            <td>11 AM</td>
+                            <td>Awards</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            {# Workshops #}
+            <div class="span6" style="width:500px;">
+                <h2>Event Workshops</h2>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Time</th>
+                            <th>Description</th>
+                            <th>Presenter</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for workshop in event.workshops %}
+                            <tr>
+                                <td>
+                                    {% if workshop.time|date('i') != "00" %}
+                                        {{ workshop.time|date('g:i A') }}
+                                    {% else %}
+                                        {{ workshop.time|date('g A') }}
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if workshop.link %}
+                                        <a href="{{workshop.link}}">
+                                            {{ workshop.title }}
+                                        </a>
+                                    {% else %}
+                                        {{ workshop.title }}
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if workshop.presenter_link %}
+                                        <a href="{{workshop.presenter_link}}">
+                                            {{ workshop.presenter }}
+                                        </a>
+                                    {% else %}
+                                        {{ workshop.presenter }}
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

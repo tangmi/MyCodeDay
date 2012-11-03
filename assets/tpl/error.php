@@ -1,3 +1,4 @@
+<?php if (!isset($error)) $error = $ex->getMessage(); ?>
 <!DOCTYPE html>
 <html>
     <head>

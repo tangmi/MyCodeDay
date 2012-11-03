@@ -88,9 +88,9 @@ class Team extends \TinyDb\Orm
     protected $website_link;
     public $__optional_website_link = TRUE;
     public $__validate_website_link = 'url';
-    protected $play_link;
-    public $__optional_play_link = TRUE;
-    public $__validate_play_link = 'url';
+    protected $try_link;
+    public $__optional_try_link = TRUE;
+    public $__validate_try_link = 'url';
 
     // Stuff organizers will set
     protected $video_link;

@@ -13,7 +13,7 @@
     # Local.My.CodeDay
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{HTTP_HOST} ^local\.my\.codeday\.org+$
-    RewriteRule ^(.*)$ index.php/$1 [QSA,L]
+    RewriteRule ^(.*)$ index.php/event/$1 [QSA,L]
 
     # Specific CodeDay
 #    RewriteCond %{REQUEST_FILENAME} !-f

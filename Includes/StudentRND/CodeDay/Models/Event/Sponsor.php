@@ -16,4 +16,5 @@ class Sponsor extends Models\EventItem
     protected $name;
     protected $url;
     protected $logo;
+    protected $sort;
 }

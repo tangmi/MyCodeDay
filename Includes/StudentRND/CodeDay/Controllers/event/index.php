@@ -16,6 +16,11 @@ class index extends Controllers\EventController
 {
     public function __get_index()
     {
-        echo CodeDay\Application::$twig->render('index.html');
+        echo CodeDay\Application::$twig->render('index.html.twig');
+    }
+
+    public function __get_schedule()
+    {
+        echo CodeDay\Application::$twig->render('schedule.html.twig');
     }
 }

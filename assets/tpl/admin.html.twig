@@ -1,0 +1,91 @@
+{% extends "template.html.twig" %}
+
+{% block content %}
+    <div class="row nopad homeboxes">
+        <div class="span6">
+            <div class="span6 box">
+                <h1>Utilities</h1>
+                <ul>
+                    <li><a href="/admin/checkin">Check In Attendees</a></li>
+                    <li><a href="/admin/import">Sync with EventBrite</a></li>
+                </ul>
+            </div>
+
+            <div class="span6 box">
+                <h1>Details</h1>
+                <form method="post" action="/admin/config/update">
+                    <input type="text" value="{{ event.name }}" name="name" placeholder="Name" /><br />
+                    <input type="text" value="{{ event.tagline }}" name="tagline" placeholder="Tagline" /><br />
+                    <input type="text" value="{{ event.hook }}" name="hook" placeholder="Hook" /><br />
+                    <textarea name="hook_details" placeholder="Hook Details">{{ event.hook_details }}</textarea><br />
+                    <input type="text" value="{{ event.color }}" name="color" placeholder="Color (HEX)" /><br />
+                    <input type="text" value="{{ event.hero_background_url }}" name="hero_background_url" placeholder="Hero Background URL" /><br />
+                    <input type="text" value="{{ event.eventbrite_id }}" name="eventbrite_id" placeholder="Eventbrite ID" /><br />
+
+                    <h2>Start Time</h2>
+                    <input type="text" value="{{ event.start_time|date('Y-m-d') }}" name="start_time_date" placeholder="Start Date (YYYY-MM-DD)" />
+                    <input type="text" value="{{ event.start_time|date('g:iA') }}" name="start_time_time" placeholder="Start Time (HH:MMam)" />
+
+                    <h2>End Time</h2>
+                    <input type="text" value="{{ event.end_time|date('Y-m-d') }}" name="end_time_date" placeholder="End Date (YYYY-MM-DD)" />
+                    <input type="text" value="{{ event.end_time|date('g:iA') }}" name="end_time_time" placeholder="End Time (HH:MMam)" />
+
+                    <h2>Address</h2>
+                    <input type="text" value="{{ event.location_name }}" name="location_name" placeholder="Location Name" /><br />
+                    <input type="text" value="{{ event.location_address_1 }}" name="location_address_1" placeholder="Location Address" /><br />
+                    <input type="text" value="{{ event.location_address_2 }}" name="location_address_2" placeholder="Location Address" /><br />
+                    <input type="text" value="{{ event.location_city }}" name="location_city" placeholder="Location City" /><br />
+                    <input type="text" value="{{ event.location_state }}" name="location_state" placeholder="Location State" /><br />
+                    <input type="text" value="{{ event.location_zip }}" name="location_zip" placeholder="Location Zip" /><br />
+                    <input type="text" value="{{ event.location_country }}" name="location_country" placeholder="Location Country" /><br />
+                    <input type="submit" value="Update" class="btn btn-primary" />
+                </form>
+            </div>
+        </div>
+
+        <div class="span6">
+            <div class="span6 box">
+                <h1>Award Types</h1>
+                <ul>
+                    {% for awardcategory in event.award_categories %}
+                        <li><a href="/admin/awardcategories/update?faqID={{ awardcategory.awardcategoryID }}">{{ awardcategory.name }}</a></li>
+                    {% endfor %}
+                    <li><a href="/admin/awardcategories/create">Add New</a></li>
+                </ul>
+            </div>
+
+
+            <div class="span6 box">
+                <h1>Sponsors</h1>
+                <ul>
+                    {% for sponsor in event.sponsors %}
+                        <li><a href="/admin/sponsors/update?sponsorID={{ sponsor.sponsorID }}">{{ sponsor.name }}</a></li>
+                    {% endfor %}
+                    <li><a href="/admin/sponsors/create">Add New</a></li>
+                </ul>
+            </div>
+
+
+            <div class="span6 box">
+                <h1>Workshops</h1>
+                <ul>
+                    {% for workshop in event.workshops %}
+                        <li><a href="/admin/workshops/update?workshopID={{ workshop.workshopID }}">{{ workshop.title }}</a></li>
+                    {% endfor %}
+                    <li><a href="/admin/workshops/create">Add New</a></li>
+                </ul>
+            </div>
+
+
+            <div class="span6 box">
+                <h1>FAQ</h1>
+                <ul>
+                    {% for faq_entry in event.faqs %}
+                        <li><a href="/admin/faqs/update?faqID={{ faq_entry.faqID }}">{{ faq_entry.title }}</a></li>
+                    {% endfor %}
+                    <li><a href="/admin/faqs/create">Add New</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+{% endblock %}
