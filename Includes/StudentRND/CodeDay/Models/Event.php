@@ -2,6 +2,8 @@
 
 namespace StudentRND\CodeDay\Models;
 
+use \StudentRND\CodeDay;
+
 class Event extends \TinyDb\Orm
 {
     public static $table_name = 'events';
@@ -125,7 +127,8 @@ class Event extends \TinyDb\Orm
         $registrants = new \TinyDb\Collection('\StudentRND\CodeDay\Models\Registrant', \TinyDb\Sql::create()
                                               ->select('*')
                                               ->from(Registrant::$table_name)
-                                              ->where('eventID = ?', $this->eventID));
+                                              ->where('eventID = ?', $this->eventID)
+                                              ->order_by('last_name, first_name'));
         return $registrants;
     }
 
@@ -133,6 +136,13 @@ class Event extends \TinyDb\Orm
     {
         return $this->registrants->find(function($registrant) use($type){
             return $registrant->person_type == $type;
+        });
+    }
+
+    public function __get_special_registrants()
+    {
+        return $this->registrants->find(function($registrant){
+            return $registrant->person_type != 'participant';
         });
     }
 
@@ -161,12 +171,22 @@ class Event extends \TinyDb\Orm
         return $this->get_registrants_by_type('facilitator');
     }
 
+    public function __get_videos()
+    {
+        return new \TinyDb\Collection('\StudentRND\CodeDay\Models\Video', \TinyDb\Sql::create()
+                                              ->select('*')
+                                              ->from(Video::$table_name)
+                                              ->where('eventID = ?', $this->eventID)
+                                              ->order_by('created_at'));
+    }
+
     public function __get_teams()
     {
-        $teams = new \TinyDb\Collection('\StudentRND\CodeDay\Models\Team', \TinyDb\Sql::create()
+        return new \TinyDb\Collection('\StudentRND\CodeDay\Models\Team', \TinyDb\Sql::create()
                                         ->select('*')
                                         ->from(Team::$table_name)
-                                        ->where('eventID = ?', $this->eventID));
+                                        ->where('eventID = ?', $this->eventID)
+                                        ->order_by('RAND()'));
     }
 
     public function __get_award_categories()
@@ -201,6 +221,37 @@ class Event extends \TinyDb\Orm
                                       ->where('eventID = ?', $this->eventID));
     }
 
+    public function sync_with_eventbrite()
+    {
+        $eventbrite_attendees = json_decode(file_get_contents('https://www.eventbrite.com/json/event_list_attendees?' .
+                                                            'app_key=' . CodeDay\Application::$config['eventbrite']['app_key'] .
+                                                            '&user_key=' . CodeDay\Application::$config['eventbrite']['user_key'] .
+                                                            '&id=' . $this->eventbrite_id))->attendees;
+
+        $out = '';
+
+        $tickets_valid = array();
+
+        foreach ($eventbrite_attendees as $r_attendee) {
+            $attendee = $r_attendee->attendee;
+            if (Registrant::find_by_ticket_id($this, $attendee->id ) === NULL) {
+                $out .= "Add: " . $attendee->first_name . ' ' . $attendee->last_name . " (" . $attendee->id  . ")\n";
+                Registrant::create($this, ucwords(strtolower($attendee->first_name)), ucwords(strtolower($attendee->last_name)), $attendee->id);
+            }
+
+            $tickets_valid[] = $attendee->id;
+        }
+
+        $this->registrants->each(function($attendee) use ($tickets_valid) {
+            if (!in_array($attendee->ticket_id, $tickets_valid)) {
+                $out .= "Remove: " . $attendee->first_name . ' ' . $attendee->last_name . " (" . $attendee->ticket_id  . ")\n";
+                $attendee->delete();
+            }
+        });
+
+        return $out;
+    }
+
     /**
      * Gets the default event for the installation. On the web this will be the next event. On a local install, this
      * will be the event specified in local.ini. Throws an exception if there are no upcoming CodeDays.
@@ -233,4 +284,5 @@ class Event extends \TinyDb\Orm
                                      ->from(static::$table_name)
                                      ->order_by('start_time'));
     }
+
 }

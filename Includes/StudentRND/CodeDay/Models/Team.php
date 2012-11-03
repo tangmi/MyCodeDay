@@ -12,7 +12,7 @@ class Team extends \TinyDb\Orm
     /* Static functions */
     public static function create(Event $event, $name)
     {
-        if (static::check_team_name($event, $name)) {
+        if (static::team_name_used($event, $name)) {
             throw new \Exception("Team exists.");
         }
 
@@ -22,19 +22,11 @@ class Team extends \TinyDb\Orm
         ));
     }
 
-    public static function check_team_name(Event $event, $name)
+    public static function team_name_used(Event $event, $name)
     {
-        return static::get_all_teams($event)->contains(function($team) use ($name) {
+        return $event->teams->contains(function($team) use ($name) {
             return $team->name === $name;
         });
-    }
-
-    public static function get_all_teams(Event $event)
-    {
-        return new \TinyDb\Collection('\StudentRND\CodeDay\Models\Team', \TinyDb\Sql::create()
-                                  ->select('*')
-                                  ->from(static::$table_name)
-                                  ->where('eventID = ?', $event->eventID));
     }
 
     /* Functions */
@@ -43,7 +35,7 @@ class Team extends \TinyDb\Orm
         Mappings\RegistrantTeam::create($registrant, $this);
     }
 
-    public function depart(Registrant $registrant)
+    public function leave(Registrant $registrant)
     {
         try {
             $registrant_mapping = new Mappings\RegistrantTeam(array(

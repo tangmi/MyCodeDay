@@ -16,3 +16,6 @@
 [submodule ".submodules/Twig"]
 	path = .submodules/Twig
 	url = git://github.com/fabpot/Twig.git
+[submodule ".submodules/Twilio"]
+	path = .submodules/Twilio
+	url = git://github.com/twilio/twilio-php.git

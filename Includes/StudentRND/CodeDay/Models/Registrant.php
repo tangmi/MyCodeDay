@@ -2,6 +2,7 @@
 
 namespace StudentRND\CodeDay\Models;
 
+use \StudentRND\CodeDay;
 use \StudentRND\CodeDay\Models\Mappings;
 
 class Registrant extends EventItem
@@ -67,6 +68,32 @@ class Registrant extends EventItem
         }
     }
 
+    public static function find_by_ticket_id(Event $event, $ticket_id)
+    {
+        $user = new \TinyDb\Collection('\StudentRND\CodeDay\Models\Registrant', \TinyDb\Sql::create()
+                          ->select('*')
+                          ->from(Registrant::$table_name)
+                          ->where('ticket_id = ?', $ticket_id)
+                          ->where('eventID = ?', $event->eventID)
+                          ->limit(1));
+        if (count($user) > 0) {
+            return $user[0];
+        } else {
+            return NULL;
+        }
+    }
+
+
+    public static function create(Event $event, $first_name, $last_name, $ticket_id)
+    {
+        return parent::create(array(
+            'eventID' => $event->eventID,
+            'first_name' => $first_name,
+            'last_name' => $last_name,
+            'ticket_id' => $ticket_id
+        ));
+    }
+
     /* Functions */
     /**
      * Checks if the supplied password is correct.
@@ -81,6 +108,11 @@ class Registrant extends EventItem
         } else {
             return TRUE;
         }
+    }
+
+    public function __get_is_organizer()
+    {
+        return $this->person_type == 'organizer' || $this->person_type == 'facilitator';
     }
 
     /**
@@ -109,8 +141,13 @@ class Registrant extends EventItem
     protected $salt;
     public function __set_password($val)
     {
-        $this->salt = hash('whirlpool', time() . rand(0,1000000) . hash('whirlpool', $val));
-        $this->password = hash('whirlpool', $val . '$' . $this->salt);
+        if (!$val) {
+            $this->password = NULL;
+            $this->salt = NULL;
+        } else {
+            $this->salt = hash('whirlpool', time() . rand(0,1000000) . hash('whirlpool', $val));
+            $this->password = hash('whirlpool', $val . '$' . $this->salt);
+        }
         $this->invalidate('salt');
         $this->invalidate('password');
     }
@@ -118,12 +155,21 @@ class Registrant extends EventItem
     // About Me
     protected $first_name;
     protected $last_name;
+    protected $work;                          public static $__name_work = 'Professional Headline (Title/Job/etc)';
     protected $bio;
     protected $profile_image;
-    protected $age;
-    protected $gender;
-    protected $school;
-    protected $skills;
+    protected $skills;                        public static $__name_skills = "Comma-separated list of skills";
+
+    public function __get_skills_list()
+    {
+        $orig_list = explode(',', $this->skills);
+        $ret = array();
+        foreach ($orig_list as $item) {
+            $ret[] = trim($item);
+        }
+
+        return $ret;
+    }
 
     public function __get_name()
     {
@@ -131,13 +177,62 @@ class Registrant extends EventItem
     }
 
     // Contact Info:
-    protected $website;                         protected $__validate_website = 'url';
-    protected $email;                           protected $__validate_email = 'email';
+    protected $website;                       protected $__validate_website = 'url'; protected $__optional_website = TRUE;
+    protected $email;                         protected $__validate_email = 'email'; protected $__optional_email = TRUE;
+    protected $phone;                         public static $__name_phone = "Phone number, if you want to recieve event info texts";
+
+    public function send_text($message)
+    {
+        if ($this->phone) {
+            try {
+                CodeDay\Twilio::$client->account->sms_messages->create(
+                    CodeDay\Twilio::$number,
+                    $this->plain_phone,
+                    $message
+                );
+            } catch (\Exception $ex) {}
+        }
+    }
+
+    public function __validate_phone($num)
+    {
+        $cleaned_phone = preg_replace('/[^0-9]*/','', $num);
+        if ($cleaned_phone == '0') {
+            return TRUE;
+        }
+        return in_array(strlen($cleaned_phone), array(0,7,10,11,12,13));
+    }
+
+    public function __set_phone($val)
+    {
+        if ($val === '0') {
+            $this->phone = NULL;
+        } else {
+            $this->phone = $val;
+        }
+
+        $this->invalidate('phone');
+    }
+
+    public function __get_plain_phone()
+    {
+        $cleaned_phone = preg_replace('/[^0-9]*/','', $this->phone);
+
+        if (strlen($cleaned_phone) == 7) {
+            $cleaned_phone = "206" . $cleaned_phone;
+        }
+
+        if (strlen($cleaned_phone) == 10) {
+            $cleaned_phone = "1" . $cleaned_phone;
+        }
+
+        return $cleaned_phone;
+    }
 
     // Operational
     protected $person_type;
     protected $checked_in;
-    protected $internship_opt_in;
+    protected $internship_opt_in;               public static $__name_internship_opt_in = 'Interested in information about internships?';
 
     /**
      * Gets a list of teams the user is on

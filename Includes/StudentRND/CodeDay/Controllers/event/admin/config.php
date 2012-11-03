@@ -14,6 +14,13 @@ use \StudentRND\CodeDay\Controllers;
  */
 class config extends Controllers\EventController
 {
+    public function before()
+    {
+        if (!Models\Registrant::current()->is_organizer) {
+            throw new \CuteControllers\HttpError(403);
+        }
+    }
+
     public function __post_update()
     {
         $form = new \FastForms\Form('\StudentRND\CodeDay\Models\Event');
