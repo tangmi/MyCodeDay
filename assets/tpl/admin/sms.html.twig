@@ -1,0 +1,18 @@
+{% extends "template.html.twig" %}
+
+{% block content %}
+    <div class="row">
+        <div class="span12 box">
+            <h1>Send SMS</h1>
+            {% if output %}
+                <tt>{{ output|raw }}</tt>
+            {% else %}
+                <p>This page will send an SMS to all participants subscribed to text alergs</p>
+                <form method="post">
+                    <input type="text" name="message" placeholder="Message" maxlength="160" />
+                    <input type="submit" class="btn btn-danger" value="Send" />
+                </form>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

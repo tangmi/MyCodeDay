@@ -1,0 +1,13 @@
+{% extends "template.html.twig" %}
+
+{% block content %}
+    <div class="row">
+        <div class="span12 box">
+            <h1>Point of no return</h1>
+            <p>This will remove <strong>{{ team.name }}</strong> FOREVER. There is no undo! No one can help you.</p>
+            <form method="post">
+                <input class="btn btn-danger" type="submit" value="I understand. Disband my team." />
+            </form>
+        </div>
+    </div>
+{% endblock %}

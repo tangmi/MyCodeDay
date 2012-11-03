@@ -1,0 +1,52 @@
+{% extends "template.html.twig" %}
+
+{% block content %}
+    <div class="row nopad homeboxes">
+        <span class="span12 box" style="padding: 5px">
+            {% if person.profile_image %}
+                <div class="circle pull-left" style="margin-right: 10px;">
+                    <img class="mug" src="{{ person.profile_image }}" />
+                </div>
+            {% endif %}
+            <h1>
+                {% if config.app.local %}
+                    {{ person.name }}
+                {% else %}
+                    {{ person.first_name }}
+                {% endif %}
+            </h1>
+            <h2>{{ person.work }}</h2>
+            {% if config.app.local and person.website %}
+                <a href="{{ person.website }}" target="_blank">Website</a>
+            {% endif %}
+
+            {% if config.app.local and person.email %}
+                <a href="mailto:{{ person.email }}">Email</a>
+            {% endif %}
+        </span>
+
+        <hr class="clearfix" />
+
+        {% if person.bio %}
+            <span class="span6">
+                <span style="margin-left: 0px;" class="span6 box">
+                    <h1>Bio</h1>
+                    <p>{{ person.bio|nl2br }}</p>
+                </span>
+            </span>
+        {% endif %}
+
+        {% if person.skills %}
+            <span class="span6">
+                <span class="span6 box">
+                    <h1>Skills</h1>
+                    <ul>
+                        {% for skill in person.skills_list %}
+                            <li>{{ skill }}</li>
+                        {% endfor %}
+                    </ul>
+                </span>
+            </span>
+        {% endif %}
+    </div>
+{% endblock %}

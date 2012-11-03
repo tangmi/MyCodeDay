@@ -1,0 +1,17 @@
+{% extends "template.html.twig" %}
+
+{% block content %}
+    <div class="row">
+        <div class="span12 box">
+            <h1>Eventbrite Sync</h1>
+            {% if output %}
+                <tt>{{ output|raw }}</tt>
+            {% else %}
+                <p>Warning: This will REMOVE attendees with refunded tickets!</p>
+                <form method="post">
+                    <input type="submit" class="btn btn-danger" value="Sync" />
+                </form>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

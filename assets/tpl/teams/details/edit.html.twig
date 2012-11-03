@@ -1,0 +1,52 @@
+{% extends "template.html.twig" %}
+
+{% block content %}
+    <div class="row">
+        {% if error %}
+            <div class="alert alert-danger">
+                {{ error }}
+            </div>
+        {% endif %}
+        <div class="span6 box">
+            <h1>Team Details</h1>
+            <form method="post">
+                <input type="text" class="input-xlarge" name="name" placeholder="Team Name" value="{{ team.name }}" /><br />
+                <input type="text" class="input-xlarge" name="website_link" placeholder="Team Website URL" value="{{ team.website_link }}" /><br />
+                <input type="text" class="input-xlarge" name="try_link" placeholder="Try It URL" value="{{ team.try_link }}" /><br />
+                <textarea name="description" class="input-xlarge" placeholder="Describe what you're making.">{{ team.description }}</textarea><br />
+
+                {% if registrant.is_organizer %}
+                    <h2>Organizer Settings</h2>
+                    <input type="text" class="input-xlarge" name="video_link" placeholder="Video URL" value="{{ team.video_link }}" /><br />
+                    <input type="text" class="input-xlarge" name="presentation_link" placeholder="Presentation URL" value="{{ team.presentation_link }}" /><br />
+                    <input type="text" class="input-xlarge" name="team_picture_url" placeholder="Team Picture URL" value="{{ team.team_picture_url }}" /><br />
+                {% endif %}
+
+                <input class="btn btn-primary" type="submit" value="Update" />
+                <a class="btn btn-danger" href="/teams/details/disband/{{ team.teamID }}">Disband</a>
+            </form>
+        </div>
+
+        <div class="span5 box">
+            <h1>Members</h1>
+            <ul>
+                {% for member in team.registrants %}
+                    <li>
+                        {{ member.name }}
+                        <form method="post" action="/teams/details/membership/leave/{{ team.teamID }}" style="display:inline">
+                            <input type="hidden" name="userID" value="{{ member.registrantID }}" />
+                            <input class="btn btn-warning" type="submit" value="Kick" />
+                        </form>
+                    </li>
+                {% endfor %}
+            </ul>
+
+            <h2>Add a Member</h2>
+            <form method="post" action="/teams/details/membership/join/{{ team.teamID }}">
+                <input type="text" name="first_name" placeholder="First Name" />
+                <input type="text" name="last_name" placeholder="Last Name" /><br />
+                <input class="btn btn-success" type="submit" value="Add" />
+            </form>
+        </div>
+    </div>
+{% endblock %}

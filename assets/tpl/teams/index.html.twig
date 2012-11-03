@@ -1,0 +1,51 @@
+{% extends "template.html.twig" %}
+
+{% block content %}
+    {% if is_logged_in %}
+        <a class="btn btn-large btn-block btn-primary" href="/teams/create">Form a New Team</a>
+    {% endif %}
+    <div class="row">
+        <div class="span12 box">
+            <h1>Teams</h1>
+
+            {% if event.teams %}
+                <ul class="teamlist">
+                    {% for team in event.teams %}
+                        <div class='team-container'>
+                            <h2 class='team_name'>
+                            <a href="/teams/details/{{ team.teamID }}">{{ team.name }}</a>
+                            </h2>
+
+                            {% for member in team.registrants %}
+                                <div class="userlisting">
+                                    <a href="/person/{{ member.registrantID }}">
+                                        {% if member.profile_image %}
+                                            <img alt="Thumb" src="{{ member.profile_image }}" />
+                                        {% else %}
+                                            <img alt="Thumb" src="/assets/img/default_user.png" />
+                                        {% endif %}
+
+                                        <div class="user_info">
+                                            <div class="real_name">
+                                                <span class='first_name'>
+                                                    {{ member.name }}
+                                                </span>
+                                            </div>
+                                            <div class="work">
+                                                {{ member.work }}
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <div class="alert alert-info">
+                    There are no teams yet. Make one!
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

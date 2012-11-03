@@ -69,4 +69,89 @@
         </div>
 
     </div>
+
+    <hr />
+
+    {# People #}
+    <div class="row nopad people">
+        <div class="span6 vr">
+            <h1>Organizers</h1>
+
+            {% for person in event.organizers %}
+                <div class="person">
+                    <div class="circle-thumb">
+                        <img src="{{ person.profile_image }}" />
+                    </div>
+                    {% if person.website %}
+                        <a href="{{ person.website }}" target="_blank">{{ person.name }}</a>
+                    {% else %}
+                        <a href="/person/{{ person.registrantID }}">{{ person.name }}</a>
+                    {% endif %}
+                    <span>{{ person.work }}</span>
+                </div>
+            {% endfor %}
+        </div>
+
+        <div class="span6">
+            <h1>Judges</h1>
+
+            {% for person in event.judges %}
+                <div class="person">
+                    <div class="circle-thumb">
+                        <img src="{{ person.profile_image }}" />
+                    </div>
+                    {% if person.website %}
+                        <a href="{{ person.website }}" target="_blank">{{ person.name }}</a>
+                    {% else %}
+                        <a href="/person/{{ person.registrantID }}">{{ person.name }}</a>
+                    {% endif %}
+                    <span>{{ person.work }}</span>
+                </div>
+            {% endfor %}
+        </div>
+
+        <hr class="clearfix" />
+    </div>
+
+    <hr />
+
+    <!-- Sponsors -->
+    <div class="row nopad sponsors">
+        <div class="span12">
+            <h1>Sponsors</h1>
+
+            <ul>
+                <li>
+                    <img src="http://studentrnd.org/wp-content/uploads/2009/07/medtronic.png" />
+                </li>
+                <li>
+                    <img src="http://studentrnd.org/wp-content/uploads/2009/07/physio.png" />
+                </li>
+                <li>
+                    <img src="http://studentrnd.org/wp-content/uploads/2009/07/stratos.jpg" />
+                </li>
+
+                {% for sponsor in event.sponsors %}
+                    <li>
+                        {% if sponsor.url %}
+                            <a href="{{ sponsor.url }}" target="_blank"><img src="{{ sponsor.logo }}" alt="{{ sponsor.name }}" /></a>
+                        {% else %}
+                            <img src="{{ sponsor.logo }}" alt="{{ sponsor.name }}" />
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+            <hr class="clearfix" />
+        </div>
+    </div>
+
+    <hr />
+
+    <!-- Presented by -->
+    <div class="row nopad presented">
+        <h1>Presented by</h1>
+        <a href="http://studentrnd.org">
+            <img src="http://studentrnd.org/images/srndlogotransparent.png" alt="StudentRND" />
+        </a>
+    </div>
 {% endblock %}

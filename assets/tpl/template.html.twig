@@ -59,8 +59,12 @@
             }
         </style>
     </head>
-
     <body>
+        <script src="/assets/js/jquery.min.js"></script>
+        <script src="https://api.filepicker.io/v0/filepicker.js"></script>
+        <script type="text/javascript">
+            filepicker.setKey('AozhoHj1fTciEN2hZl3_Fz');
+        </script>
         {# Navigation #}
         <div class="navbar navbar-fixed-top">
             <div class="navbar-inner">
@@ -70,7 +74,7 @@
                         CodeDay
                     </a>
                     <a class="brand" href="/">
-                        {{ event.name }}
+                        <span>{{ event.name }}</span>
                     </a>
                     <div class="nav-collapse">
                         {% include "nav.html.twig" %}

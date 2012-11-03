@@ -1,0 +1,22 @@
+{% extends "template.html.twig" %}
+
+{% block content %}
+    <div class="row">
+        {% if error %}
+            <div class="alert alert-danger">
+                {{ error }}
+            </div>
+        {% endif %}
+        <div class="span12 box">
+            <p>You can use this page to log in if you registered for CodeDay. If you haven't logged in yet, you
+                can leave the password field blank. All fields are case-insensitive, and based on what you registered
+                with. If you have an questions, talk to one of the organizers or facilicators.</p>
+            <form method="post">
+                <input type="text" name="first_name" placeholder="First Name" /><br />
+                <input type="text" name="last_name" placeholder="Last Name" /><br />
+                <input type="password" name="password" placeholder="Password" /><br />
+                <input type="submit" value="Log me in!" />
+            </form>
+        </div>
+    </div>
+{% endblock %}

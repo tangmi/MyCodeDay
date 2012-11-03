@@ -1,0 +1,41 @@
+{% extends "template.html.twig" %}
+
+{% block content %}
+    <span class="span12 box">
+        <h1>About {{ instance.name }}</h1>
+        <a class="btn btn-warning" href="/person/password/{{ person.registrantID }}">Change Password</a>
+
+        <form method="post">
+            {% set x = form.render('bootstrap', instance) %}
+            <hr />
+            <input type="submit" class="btn btn-success" value="Update" />
+        </form>
+    </span>
+
+    <script type="text/javascript">
+        $('#profile_image').each(function(){
+            var elem = $(this);
+            var img_src = elem.val();
+            var hidden_field = $('<input type="hidden" name="profile_image" id="profile_image" value="' + img_src + '" />');
+
+            elem.parent().append(hidden_field);
+
+            if (!img_src) {
+                img_src = '/assets/img/default_user.png';
+            }
+
+            var img = $('<img class="usermug" src="' + img_src + '" />');
+
+            img.click(function(){
+                filepicker.getFile("image/*", {'modal': true},
+                    function(url, metadata){
+                        url = url + "/convert?fit=crop&h=180&w=180&align=faces"
+                        hidden_field.val(url);
+                        img.attr('src', url);
+                });
+            });
+
+            elem = elem.replaceWith(img);
+        });
+    </script>
+{% endblock %}

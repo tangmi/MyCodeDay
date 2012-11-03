@@ -4,20 +4,17 @@
     ] %}
 
 {# Show the teams link if the event has started #}
-{% if (event.has_started or is_logged_in or config.app.local) %}
-    {% set nav = nav|merge([{ 'name': 'Resources', 'uri': '/resources.html'}]) %}
-    {% set nav = nav|merge([{ 'name': 'Videos', 'uri': '/videos.html'}]) %}
+{% if (event.has_ended or config.app.local) %}
     {% set nav = nav|merge([{ 'name': 'Teams', 'uri': '/teams.html'}]) %}
 {% endif %}
 
 {# Show main nav links #}
-{% if (config.app.local or is_logged_in) %}
+{% if (config.app.local) %}
     {% set nav = nav|merge([{ 'name': 'Rules', 'uri': '/rules.html'}]) %}
+    {% set nav = nav|merge([{ 'name': 'Videos', 'uri': '/videos.html'}]) %}
+    {% set nav = nav|merge([{ 'name': 'People', 'uri': '/people.html'}]) %}
     {% if (is_logged_in) %}
-        {% set nav = nav|merge([{ 'name': 'Me', 'uri': '/me.html'}]) %}
-        {% if (registrant.is_organizer) %}
-            {% set nav = nav|merge([{ 'name': 'Admin', 'uri': '/admin.html'}]) %}
-        {% endif %}
+        {% set nav = nav|merge([{ 'name': 'Me', 'uri': '/person/' ~ registrant.registrantID}]) %}
     {% else %}
         {% set nav = nav|merge([{ 'name': 'Login', 'uri': '/login.html'}]) %}
     {% endif %}
@@ -30,8 +27,14 @@
     {% set nav = nav|merge([{ 'name': 'Register', 'uri': '/register.html' }]) %}
 {% endif %}
 
+{% if (is_logged_in) %}
+    {% if (registrant.is_organizer) %}
+        {% set nav = nav|merge([{ 'name': 'Admin', 'uri': '/admin.html'}]) %}
+    {% endif %}
+{% endif %}
+
 {# Show the past events except when the user is logged in #}
-{% if (not(is_logged_in)) %}
+{% if (not(config.app.local)) %}
     {% set nav = nav|merge([{ 'name': 'Past Events', 'uri': 'http://codeday.org/past.html?city=' ~ event.name|lower }]) %}
 {% endif %}
 

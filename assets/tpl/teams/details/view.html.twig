@@ -1,0 +1,13 @@
+{% extends "template.html.twig" %}
+
+{% block content %}
+    <div class="row">
+        <div class="span12 box">
+            <h1>{{ team.name }}</h1>
+            {% if team.website_link %}
+                <a class="team-website" href="{{ team.website_link }}" target="_blank">{{ team.website_link }}</a>
+            {% endif %}
+            <p>{{ team.description }}</p>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,60 @@
+{% extends "template.html.twig" %}
+
+{% block content %}
+    <div class="row">
+        <div class="span12 box">
+            <h1>Judges, Mentors, and Event Staff</h1>
+            {% if event.special_registrants %}
+                {% for member in event.special_registrants %}
+                    <div class="userlisting">
+                        <a href="/person/{{ member.registrantID }}">
+                            {% if member.profile_image %}
+                                <img alt="Thumb" src="{{ member.profile_image }}" />
+                            {% else %}
+                                <img alt="Thumb" src="/assets/img/default_user.png" />
+                            {% endif %}
+
+                            <div class="user_info">
+                                <div class="real_name">
+                                    <span class='first_name'>
+                                        {{ member.name }}
+                                    </span>
+                                </div>
+                                <div class="work">
+                                    {{ member.work }}
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                {% endfor %}
+                <hr class="clearfix" />
+            {% endif %}
+
+
+            <h1>Participants</h1>
+            {% for member in event.participants %}
+                <div class="userlisting">
+                    <a href="/person/{{ member.registrantID }}">
+                        {% if member.profile_image %}
+                            <img alt="Thumb" src="{{ member.profile_image }}" />
+                        {% else %}
+                            <img alt="Thumb" src="/assets/img/default_user.png" />
+                        {% endif %}
+
+                        <div class="user_info">
+                            <div class="real_name">
+                                <span class='first_name'>
+                                    {{ member.name }}
+                                </span>
+                            </div>
+                            <div class="work">
+                                {{ member.work }}
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            {% endfor %}
+            <hr class="clearfix" />
+        </div>
+    </div>
+{% endblock %}

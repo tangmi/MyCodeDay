@@ -1,0 +1,19 @@
+{% extends "template.html.twig" %}
+
+{% block content %}
+    <div class="row">
+        {% if error %}
+            <div class="alert alert-danger">
+                {{ error }}
+            </div>
+        {% endif %}
+        <div class="span12 box">
+            <h1>Form a Team</h1>
+            <p>All we need to get started is a name (you can change it). You'll be able to add more details to your team later.</p>
+            <form method="post">
+                <input type="text" name="name" placeholder="Team Name" /><br />
+                <input class="btn btn-primary" type="submit" value="Do it!" />
+            </form>
+        </div>
+    </div>
+{% endblock %}
