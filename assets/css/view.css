@@ -104,6 +104,8 @@ div textarea {
 .person span {
     height: 20px;
     overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .person a,
@@ -491,6 +493,8 @@ footer p a:hover {
     display:block;
     color: #444;
     overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
     height: 20px;
 }
 
@@ -499,6 +503,8 @@ footer p a:hover {
     display:block;
     color: #666;
     overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
     height: 20px;
 }
 
@@ -518,6 +524,8 @@ footer p a:hover {
     margin-bottom: 2px;
     font-size: 14px;
     overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
     height: 16px;
 }
 

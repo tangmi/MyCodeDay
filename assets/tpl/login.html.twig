@@ -9,12 +9,17 @@
         {% endif %}
         <div class="span12 box">
             <h1>Login</h1>
-            <p>IF YOU HAVEN'T LOGGED IN BEFORE, YOU DO NOT NEED TO ENTER A PASSWORD.</p>
+            {% if event.in_progress %}
+                <p>IF YOU HAVEN'T LOGGED IN BEFORE, YOU DO NOT NEED TO ENTER A PASSWORD.</p>
+            {% else %}
+                <p>Enter the name you used when you bought your tickets. If you didn't set a password during the
+                    event, you will be unable to login here. Contact the organizers for assistance.</p>
+            {% endif %}
             <form method="post">
                 <input type="text" name="first_name" placeholder="First Name" /><br />
                 <input type="text" name="last_name" placeholder="Last Name" /><br />
                 <input type="password" name="password" placeholder="Password" /><br />
-                <input type="submit" value="Log me in!" />
+                <input class="btn btn-primary" type="submit" value="Log me in!" />
             </form>
         </div>
     </div>

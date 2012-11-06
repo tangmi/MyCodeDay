@@ -51,4 +51,19 @@ class index extends Controllers\EventController
             'output' => nl2br("Sync started\n" . $this->event->sync_with_eventbrite() . "Sync complete")
         ));
     }
+
+    public function __get_purgetpl()
+    {
+        static::del_tree(TEMPLATE_TEMP_DIR);
+        $this->redirect('/admin.html');
+    }
+
+    public static function del_tree($dir)
+    {
+        $files = array_diff(scandir($dir), array('.','..'));
+        foreach ($files as $file) {
+            (is_dir("$dir/$file")) ? static::del_tree("$dir/$file") : unlink("$dir/$file");
+        }
+        return rmdir($dir);
+    }
 }

@@ -142,14 +142,17 @@ class Event extends \TinyDb\Orm
         }
     }
 
+    private $_registrants = NULL;
     public function __get_registrants()
     {
-        $registrants = new \TinyDb\Collection('\StudentRND\CodeDay\Models\Registrant', \TinyDb\Sql::create()
-                                              ->select('*')
-                                              ->from(Registrant::$table_name)
-                                              ->where('eventID = ?', $this->eventID)
-                                              ->order_by('last_name, first_name'));
-        return $registrants;
+        if (!$this->_registrants) {
+            $this->_registrants = new \TinyDb\Collection('\StudentRND\CodeDay\Models\Registrant', \TinyDb\Sql::create()
+                                                  ->select('*')
+                                                  ->from(Registrant::$table_name)
+                                                  ->where('eventID = ?', $this->eventID)
+                                                  ->order_by('last_name, first_name'));
+        }
+        return $this->_registrants;
     }
 
     public function __get_textable_numbers_count()
@@ -159,18 +162,32 @@ class Event extends \TinyDb\Orm
         }));
     }
 
+    private $_registrants_types = array();
     public function get_registrants_by_type($type)
     {
-        return $this->registrants->find(function($registrant) use($type){
-            return $registrant->person_type == $type;
-        });
+        if (!isset($this->_registrants_types[$type])) {
+            $this->_registrants_types[$type] = new \TinyDb\Collection('\StudentRND\CodeDay\Models\Registrant', \TinyDb\Sql::create()
+                                                  ->select('*')
+                                                  ->from(Registrant::$table_name)
+                                                  ->where('eventID = ?', $this->eventID)
+                                                  ->where('person_type = ?', $type)
+                                                  ->order_by('last_name, first_name'));
+        }
+        return $this->_registrants_types[$type];
     }
 
+    private $_special_registrants = NULL;
     public function __get_special_registrants()
     {
-        return $this->registrants->find(function($registrant){
-            return $registrant->person_type != 'participant';
-        });
+        if (!$this->_special_registrants) {
+            $this->_special_registrants = new \TinyDb\Collection('\StudentRND\CodeDay\Models\Registrant', \TinyDb\Sql::create()
+                                                  ->select('*')
+                                                  ->from(Registrant::$table_name)
+                                                  ->where('eventID = ?', $this->eventID)
+                                                  ->where('person_type != "participant"')
+                                                  ->order_by('last_name, first_name'));
+        }
+        return $this->_special_registrants;
     }
 
     public function __get_organizers()
