@@ -71,18 +71,26 @@ class Team extends \TinyDb\Orm
     public function __validate_name($val)
     {
         $me = $this;
-        return !static::get_all_teams($this->event)->contains(function($team) use ($val, $me) {
+        return !$this->event->teams->contains(function($team) use ($val, $me) {
             return ($team->teamID !== $me->teamID &&
                     $team->name === $val);
         });
     }
     protected $description;
+    public function __get_short_description()
+    {
+        $sentences = explode('.', $this->description);
+        $ret = $sentences[0];
+        if (strlen($ret) > 50) {
+            $ret = substr($ret, 0, 47) . '...';
+        }
+
+        return $ret;
+    }
     protected $website_link;
     public $__optional_website_link = TRUE;
-    public $__validate_website_link = 'url';
     protected $try_link;
     public $__optional_try_link = TRUE;
-    public $__validate_try_link = 'url';
 
     // Stuff organizers will set
     protected $video_link;

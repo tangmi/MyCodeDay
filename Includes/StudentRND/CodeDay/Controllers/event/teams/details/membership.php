@@ -13,6 +13,10 @@ class membership extends Controllers\EventController
 {
     public function before()
     {
+        if (!$this->event->has_started) {
+            throw new \CuteControllers\HttpError(404);
+        }
+
         $this->team = new Models\Team($this->positional_args[0]);
         CodeDay\Application::$twig->addGlobal('team', $this->team);
 
@@ -20,6 +24,9 @@ class membership extends Controllers\EventController
             !(Models\Registrant::current()->on_team($this->team) ||
              Models\Registrant::current()->is_organizer)) {
             throw new \CuteControllers\HttpError(401);
+        } else if ($this->request->method !== 'GET' &&
+                   !$this->event->can_edit) {
+            throw new CodeDay\ReadOnlyException();
         }
     }
 

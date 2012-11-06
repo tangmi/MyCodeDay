@@ -41,6 +41,10 @@ class index extends Controllers\EventController
 
     public function __get_people()
     {
+        if (!$this->event->has_started && (!Models\Registrant::is_logged_in() || !Models\Registrant::current()->is_organizer)) {
+            throw new \CuteControllers\HttpError(404);
+        }
+
         echo CodeDay\Application::$twig->render('people/index.html.twig');
     }
 }

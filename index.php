@@ -87,6 +87,10 @@ try {
         include(TEMPLATE_DIR . '/error.php');
     }
 } catch (\Exception $ex) {
-    $error = "Error:<br />" . nl2br($ex);
+    if ($config['app']['debug']) {
+        $error = "Error:<br />" . nl2br($ex);
+    } else {
+        $error = "Error:<br />" . nl2br($ex->getMessage());
+    }
     include(TEMPLATE_DIR . '/error.php');
 }

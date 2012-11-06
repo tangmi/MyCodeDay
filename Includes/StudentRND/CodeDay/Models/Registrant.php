@@ -30,8 +30,12 @@ class Registrant extends EventItem
      */
     public static function current()
     {
-        if (isset($_SESSION['registrantID'])) {
-            return new Registrant($_SESSION['registrantID']);
+        if (isset($_SESSION['registrantID_' . CodeDay\Application::$event->eventID])) {
+            try {
+                return new Registrant($_SESSION['registrantID_' . CodeDay\Application::$event->eventID]);
+            } catch (\Exception $ex) {
+                static::logout();
+            }
         } else {
             throw new \CuteControllers\HttpError(401);
         }
@@ -42,7 +46,7 @@ class Registrant extends EventItem
      */
     public static function logout()
     {
-        unset($_SESSION['registrantID']);
+        unset($_SESSION['registrantID_' . CodeDay\Application::$event->eventID]);
     }
 
     /**
@@ -102,6 +106,12 @@ class Registrant extends EventItem
      */
     public function check_password($password)
     {
+        if (!CodeDay\Application::$event->has_started && !$this->is_organizer) {
+            return FALSE;
+        }/* else if (CodeDay\Application::$event->has_ended && !$this->password) {
+            return FALSE;
+        } Don't allow empty passwords after the event */
+
         if ($this->password) {
             $proper_hash = hash('whirlpool', $password . '$' . $this->salt);
             return $proper_hash === $this->password;
@@ -120,7 +130,7 @@ class Registrant extends EventItem
      */
     public function login()
     {
-        $_SESSION['registrantID'] = $this->registrantID;
+        $_SESSION['registrantID_' . CodeDay\Application::$event->eventID] = $this->registrantID;
     }
 
     /**
@@ -157,7 +167,7 @@ class Registrant extends EventItem
     protected $last_name;
     protected $work;                          public static $__name_work = 'Professional Headline (Title/Job/etc)';
     protected $bio;
-    protected $profile_image;
+    protected $profile_image;                 public static $__name_profile_image = 'Picture (click to change)';
     protected $skills;                        public static $__name_skills = "Comma-separated list of skills";
 
     public function __get_skills_list()
@@ -177,7 +187,16 @@ class Registrant extends EventItem
     }
 
     // Contact Info:
-    protected $website;                       protected $__validate_website = 'url'; protected $__optional_website = TRUE;
+    protected $website;                       protected $__optional_website = TRUE;
+    public function __set_website($val)
+    {
+        if ($val != "" && substr($val, 0, 4) !== 'http') {
+            $val = 'http://' . $val;
+        }
+
+        $this->website = $val;
+        $this->invalidate('website');
+    }
     protected $email;                         protected $__validate_email = 'email'; protected $__optional_email = TRUE;
     protected $phone;                         public static $__name_phone = "Phone number, if you want to recieve event info texts";
 
@@ -200,7 +219,7 @@ class Registrant extends EventItem
         if ($cleaned_phone == '0') {
             return TRUE;
         }
-        return in_array(strlen($cleaned_phone), array(0,7,10,11,12,13));
+        return in_array(strlen($cleaned_phone), array(0,10,11,12,13));
     }
 
     public function __set_phone($val)
@@ -217,10 +236,6 @@ class Registrant extends EventItem
     public function __get_plain_phone()
     {
         $cleaned_phone = preg_replace('/[^0-9]*/','', $this->phone);
-
-        if (strlen($cleaned_phone) == 7) {
-            $cleaned_phone = "206" . $cleaned_phone;
-        }
 
         if (strlen($cleaned_phone) == 10) {
             $cleaned_phone = "1" . $cleaned_phone;

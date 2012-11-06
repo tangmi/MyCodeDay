@@ -1,13 +1,58 @@
 {% extends "template.html.twig" %}
 
 {% block content %}
-    <div class="row">
-        <div class="span12 box">
+    <div class="row nopad">
+        {% if team.team_picture_url %}
+            <div class="span12 box cover" style="background-image: url('{{team.team_picture_url}}');"></div>
+        {% endif %}
+        <div class="span8 box">
             <h1>{{ team.name }}</h1>
             {% if team.website_link %}
                 <a class="team-website" href="{{ team.website_link }}" target="_blank">{{ team.website_link }}</a>
             {% endif %}
             <p>{{ team.description }}</p>
+        </div>
+        <div class="span4 box" style="margin-left: 15px;padding-bottom: 15px">
+            <h1>Links</h1>
+            {% if team.website_link %}
+                <a class="btn btn-primary" href="{{ team.website_link }}" target="_blank">Project Website</a>
+            {% endif %}
+            {% if team.try_link %}
+                <a class="btn btn-primary" href="{{ team.try_link }}" target="_blank">Try</a>
+            {% endif %}
+            {% if team.video_link %}
+                <a class="btn btn-primary" href="{{ team.video_link }}" target="_blank">Video</a>
+            {% endif %}
+            {% if team.presentation_link %}
+                <a class="btn btn-primary" href="{{ team.presentation_link }}" target="_blank">Presentation</a>
+            {% endif %}
+        </div>
+        <div class="span12 box">
+            <h1>Members</h1>
+            <div class="team-container">
+                {% for member in team.registrants %}
+                    <div class="userlisting">
+                        <a href="/person/{{ member.registrantID }}">
+                            {% if member.profile_image %}
+                                <img alt="Thumb" src="{{ member.profile_image }}" />
+                            {% else %}
+                                <img alt="Thumb" src="/assets/img/default_user.png" />
+                            {% endif %}
+
+                            <div class="user_info">
+                                <div class="real_name">
+                                    <span class='first_name'>
+                                        {{ member.name }}
+                                    </span>
+                                </div>
+                                <div class="work">
+                                    {{ member.work }}
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
         </div>
     </div>
 {% endblock %}

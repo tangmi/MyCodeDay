@@ -13,7 +13,14 @@ class create extends Controllers\EventController
 {
     public function before()
     {
+        if (!$this->event->has_started) {
+            throw new \CuteControllers\HttpError(404);
+        }
+
         Models\Registrant::current();
+        if (!$this->event->in_progress) {
+            throw new CodeDay\ReadOnlyException();
+        }
     }
 
     public function __get_index()

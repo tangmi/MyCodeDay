@@ -8,7 +8,7 @@
             </div>
         {% endif %}
         <div class="span6 box">
-            <h1>Team Details</h1>
+            <h1>Team Details <small>(<a href="?preview=1" target="_blank">preview</a>)</small></h1>
             <form method="post">
                 <input type="text" class="input-xlarge" name="name" placeholder="Team Name" value="{{ team.name }}" /><br />
                 <input type="text" class="input-xlarge" name="website_link" placeholder="Team Website URL" value="{{ team.website_link }}" /><br />
@@ -19,7 +19,37 @@
                     <h2>Organizer Settings</h2>
                     <input type="text" class="input-xlarge" name="video_link" placeholder="Video URL" value="{{ team.video_link }}" /><br />
                     <input type="text" class="input-xlarge" name="presentation_link" placeholder="Presentation URL" value="{{ team.presentation_link }}" /><br />
-                    <input type="text" class="input-xlarge" name="team_picture_url" placeholder="Team Picture URL" value="{{ team.team_picture_url }}" /><br />
+
+                    <h3>Team Photo</h3>
+                    <input type="text" class="input-xlarge" name="team_picture_url" id="team_picture_url" placeholder="Team Picture URL" value="{{ team.team_picture_url }}" /><br />
+
+                        <script type="text/javascript">
+                            $('#team_picture_url').each(function(){
+                                console.log('exexe');
+                                var elem = $(this);
+                                var img_src = elem.val();
+                                var hidden_field = $('<input type="hidden" name="team_picture_url" id="team_picture_url" value="' + img_src + '" />');
+
+                                elem.parent().append(hidden_field);
+
+                                if (!img_src) {
+                                    img_src = '/assets/img/default_team.png';
+                                }
+
+                                var img = $('<img class="teammug small" src="' + img_src + '" />');
+
+                                img.click(function(){
+                                    filepicker.getFile("image/*", {'modal': true},
+                                        function(url, metadata){
+                                            url = url + "/convert?fit=crop&h=640&w=960"
+                                            hidden_field.val(url);
+                                            img.attr('src', url);
+                                    });
+                                });
+
+                                elem = elem.replaceWith(img);
+                            });
+                        </script>
                 {% endif %}
 
                 <input class="btn btn-primary" type="submit" value="Update" />

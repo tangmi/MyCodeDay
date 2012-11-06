@@ -36,19 +36,17 @@ class EventCrudFormController extends \CuteControllers\Base\CrudFormController
         $year = $request->request('cd_year');
         $month = $request->request('cd_month');
 
-        if ($name) {
-            $this->event = $this->all_codedays->find_one(function($event) use ($month, $year, $name) {
-                if (strtolower($name) != strtolower($event->name)) {
-                    return FALSE;
-                }else if ($month && $year) {
-                    return (strtolower(date('M Y', $event->start_date)) == strtolower("$month $year"));
-                } else {
-                    return TRUE;
-                }
-            });
-        } else {
-            $this->event = Models\Event::get_default_event();
-        }
+        $this->event = $this->all_codedays->find_one(function($event) use ($month, $year, $name) {
+            if (strtolower($name) != strtolower($event->name)) {
+                return FALSE;
+            }else if ($month && $year) {
+                return (strtolower(date('M Y', $event->start_time)) == strtolower("$month $year"));
+            } else {
+                return TRUE;
+            }
+        });
+
+        CodeDay\Application::$event = $this->event;
 
         $this->static_values = array('eventID' => $this->event->eventID);
 

@@ -2,7 +2,7 @@
 
 {% block content %}
     <span class="span12 box">
-        <h1>About {{ instance.name }}</h1>
+        <h1>About {{ instance.name }} <small>(<a href="?preview=1" target="_blank">preview</a>)</small></h1>
         <a class="btn btn-warning" href="/person/password/{{ person.registrantID }}">Change Password</a>
 
         <form method="post">

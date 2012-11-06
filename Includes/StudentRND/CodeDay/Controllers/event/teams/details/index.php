@@ -13,6 +13,10 @@ class index extends Controllers\EventController
 {
     public function before()
     {
+        if (!$this->event->has_started) {
+            throw new \CuteControllers\HttpError(404);
+        }
+
         $this->team = new Models\Team($this->positional_args[0]);
         CodeDay\Application::$twig->addGlobal('team', $this->team);
 
@@ -20,6 +24,9 @@ class index extends Controllers\EventController
             !(Models\Registrant::current()->on_team($this->team) ||
              Models\Registrant::current()->is_organizer)) {
             throw new \CuteControllers\HttpError(401);
+        } else if ($this->request->method !== 'GET' &&
+                   !$this->event->can_edit) {
+            throw new CodeDay\ReadOnlyException();
         }
     }
 
@@ -27,7 +34,9 @@ class index extends Controllers\EventController
     {
         if (Models\Registrant::is_logged_in() &&
             (Models\Registrant::current()->on_team($this->team) ||
-             Models\Registrant::current()->is_organizer)) {
+             Models\Registrant::current()->is_organizer) &&
+            $this->event->can_edit &&
+            !$this->request->get('preview')) {
             echo CodeDay\Application::$twig->render('teams/details/edit.html.twig');
         } else {
             echo CodeDay\Application::$twig->render('teams/details/view.html.twig');
@@ -54,6 +63,9 @@ class index extends Controllers\EventController
             !(Models\Registrant::current()->on_team($this->team) ||
              Models\Registrant::current()->is_organizer)) {
             throw new \CuteControllers\HttpError(401);
+        } else if ($this->request->method !== 'GET' &&
+                   !$this->event->can_edit) {
+            throw new CodeDay\ReadOnlyException();
         }
 
         echo CodeDay\Application::$twig->render('teams/details/disband.html.twig');

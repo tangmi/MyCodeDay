@@ -122,6 +122,26 @@ class Event extends \TinyDb\Orm
         return $this->end_time <= time();
     }
 
+    public function __get_in_progress()
+    {
+        return $this->has_started && !$this->has_ended;
+    }
+
+    public function __get_has_edit_period_elapsed()
+    {
+        return $this->end_time + (60 * 60 * 24 * 7 * 2) <= time();
+    }
+
+    public function __get_can_edit()
+    {
+        // Is the user an admin? If so, allow editing
+        if (Registrant::is_logged_in() && Registrant::current()->is_organizer) {
+            return TRUE;
+        } else {
+            return $this->has_started && !$this->has_edit_period_elapsed;
+        }
+    }
+
     public function __get_registrants()
     {
         $registrants = new \TinyDb\Collection('\StudentRND\CodeDay\Models\Registrant', \TinyDb\Sql::create()
@@ -130,6 +150,13 @@ class Event extends \TinyDb\Orm
                                               ->where('eventID = ?', $this->eventID)
                                               ->order_by('last_name, first_name'));
         return $registrants;
+    }
+
+    public function __get_textable_numbers_count()
+    {
+        return count($this->registrants->find(function($user) {
+            return $user->phone != NULL && $user->phone != 0;
+        }));
     }
 
     public function get_registrants_by_type($type)
@@ -171,22 +198,12 @@ class Event extends \TinyDb\Orm
         return $this->get_registrants_by_type('facilitator');
     }
 
-    public function __get_videos()
-    {
-        return new \TinyDb\Collection('\StudentRND\CodeDay\Models\Video', \TinyDb\Sql::create()
-                                              ->select('*')
-                                              ->from(Video::$table_name)
-                                              ->where('eventID = ?', $this->eventID)
-                                              ->order_by('created_at'));
-    }
-
     public function __get_teams()
     {
         return new \TinyDb\Collection('\StudentRND\CodeDay\Models\Team', \TinyDb\Sql::create()
                                         ->select('*')
                                         ->from(Team::$table_name)
-                                        ->where('eventID = ?', $this->eventID)
-                                        ->order_by('RAND()'));
+                                        ->where('eventID = ?', $this->eventID));
     }
 
     public function __get_award_categories()
@@ -228,14 +245,11 @@ class Event extends \TinyDb\Orm
                                                             '&user_key=' . CodeDay\Application::$config['eventbrite']['user_key'] .
                                                             '&id=' . $this->eventbrite_id))->attendees;
 
-        $out = '';
-
         $tickets_valid = array();
 
         foreach ($eventbrite_attendees as $r_attendee) {
             $attendee = $r_attendee->attendee;
             if (Registrant::find_by_ticket_id($this, $attendee->id ) === NULL) {
-                $out .= "Add: " . $attendee->first_name . ' ' . $attendee->last_name . " (" . $attendee->id  . ")\n";
                 Registrant::create($this, ucwords(strtolower($attendee->first_name)), ucwords(strtolower($attendee->last_name)), $attendee->id);
             }
 
@@ -244,12 +258,9 @@ class Event extends \TinyDb\Orm
 
         $this->registrants->each(function($attendee) use ($tickets_valid) {
             if (!in_array($attendee->ticket_id, $tickets_valid)) {
-                $out .= "Remove: " . $attendee->first_name . ' ' . $attendee->last_name . " (" . $attendee->ticket_id  . ")\n";
                 $attendee->delete();
             }
         });
-
-        return $out;
     }
 
     /**

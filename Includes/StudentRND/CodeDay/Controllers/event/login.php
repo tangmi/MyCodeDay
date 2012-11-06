@@ -37,9 +37,9 @@ class login extends Controllers\EventController
         } else {
             $user->login();
             if ($user->password) {
-                $this->redirect('/user.html');
+                $this->redirect('/person/' . $user->registrantID);
             } else {
-                $this->redirect('/user/password.html');
+                $this->redirect('/person/password/' . $user->registrantID);
             }
         }
     }

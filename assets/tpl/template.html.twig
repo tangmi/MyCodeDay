@@ -89,7 +89,13 @@
                 <h1>CodeDay {{ event.name }}</h1>
                 <h2>{{ event.tagline }}</h2>
                 <hr class="clearfix" />
-                <a class="btn" href="/register.html">Register Today!</a>
+                {% if not event.has_started %}
+                    <a class="btn" href="/register.html">Grab Your Ticket</a>
+                {% elseif not event.has_ended %}
+                    <a class="btn btn-door">Tickets Available At The Door</a>
+                {% else %}
+                    <a class="btn btn-ended" href="/teams.html">Check out the Projects</a>
+                {% endif %}
                 <p>{{ event.time_period_string }} at <a href="{{ event.location_map_link }}">{{ event.location_name }}</a></p>
             </div>
         </div>
@@ -107,6 +113,13 @@
                     Copyright &copy; 2012 Student Research and Development. All rights reserved.
                 </p>
                 <p class="pull-right">
+                    {% if not event.can_edit and not is_logged_in %}
+                        <a href="/login.html">Log In</a>
+                    {% endif %}
+                    {% if is_logged_in %}
+                        <a href="/login/logout">Log Out</a>
+                    {% endif %}
+                     |
                     <a href="http://github.com/StudentRND/MyCodeDay">Fork me on Github!</a>
                 </p>
             </div>

@@ -1,43 +1,56 @@
 {% set nav = [
-    { 'name': 'Home', 'uri': '/index.html' },
-    { 'name': 'Schedule', 'uri': '/schedule.html' }
+    { 'name': 'Home', 'uri': '/index.html' }
     ] %}
 
-{# Show the teams link if the event has started #}
-{% if (event.has_ended or config.app.local) %}
-    {% set nav = nav|merge([{ 'name': 'Teams', 'uri': '/teams.html'}]) %}
-{% endif %}
-
-{# Show main nav links #}
-{% if (config.app.local) %}
-    {% set nav = nav|merge([{ 'name': 'Rules', 'uri': '/rules.html'}]) %}
-    {% set nav = nav|merge([{ 'name': 'Videos', 'uri': '/videos.html'}]) %}
-    {% set nav = nav|merge([{ 'name': 'People', 'uri': '/people.html'}]) %}
-    {% if (is_logged_in) %}
-        {% set nav = nav|merge([{ 'name': 'Me', 'uri': '/person/' ~ registrant.registrantID}]) %}
-    {% else %}
-        {% set nav = nav|merge([{ 'name': 'Login', 'uri': '/login.html'}]) %}
-    {% endif %}
-
-{% else %}
-    {% set nav = nav|merge([{ 'name': 'FAQ', 'uri': '/faq.html'}]) %}
-{% endif %}
-
-{% if (not(config.app.local or event.has_ended)) %}
+{# Show the register link if the event hasn't started #}
+{% if not event.has_started %}
     {% set nav = nav|merge([{ 'name': 'Register', 'uri': '/register.html' }]) %}
 {% endif %}
 
+{# Show the schedule link if the event hasn't ended #}
+{% if not event.has_ended %}
+    {% set nav = nav|merge([{ 'name': 'Schedule', 'uri': '/schedule.html' }]) %}
+{% endif %}
+
+{# Show the rules link if the event is happening #}
+{% if (event.in_progress) %}
+    {% set nav = nav|merge([{ 'name': 'Rules', 'uri': '/rules.html'}]) %}
+{% else %}
+    {% set nav = nav|merge([{ 'name': 'FAQ', 'uri': '/faq.html' }]) %}
+{% endif %}
+
+
+{# Show the user/team links if the event has started #}
+{% if event.has_started %}
+    {% set nav = nav|merge([{ 'name': 'Teams', 'uri': '/teams.html'}]) %}
+{% endif %}
+{% if (event.has_started or is_logged_in and registrant.is_organizer) %}
+    {% set nav = nav|merge([{ 'name': 'People', 'uri': '/people.html'}]) %}
+{% endif %}
+
+{# If the user is logged in, show their profile #}
+{% if is_logged_in %}
+    {% set nav = nav|merge([{ 'name': 'Me', 'uri': '/person/' ~ registrant.registrantID}]) %}
+
+{# Otherwise, if they can still edit the site, show the login link #}
+{% elseif event.can_edit %}
+    {% set nav = nav|merge([{ 'name': 'Login', 'uri': '/login.html'}]) %}
+{% endif %}
+
+{# Show the admin page #}
 {% if (is_logged_in) %}
     {% if (registrant.is_organizer) %}
         {% set nav = nav|merge([{ 'name': 'Admin', 'uri': '/admin.html'}]) %}
     {% endif %}
 {% endif %}
 
-{# Show the past events except when the user is logged in #}
-{% if (not(config.app.local)) %}
-    {% set nav = nav|merge([{ 'name': 'Past Events', 'uri': 'http://codeday.org/past.html?city=' ~ event.name|lower }]) %}
+{# Show the past events except when at the event or logged in #}
+{% if not event.in_progress %}
+    {% set nav = nav|merge([{ 'name': 'More CodeDays', 'uri': 'http://codeday.org/?city=' ~ event.name|lower }]) %}
 {% endif %}
 
+
+{# Finally, actually render the bar #}
 <ul class="nav pull-right">
     {% for page in nav %}
         {% if (page.uri == current_page) %}

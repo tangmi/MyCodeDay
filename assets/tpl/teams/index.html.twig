@@ -1,8 +1,9 @@
 {% extends "template.html.twig" %}
 
 {% block content %}
-    {% if is_logged_in %}
+    {% if is_logged_in and event.in_progress %}
         <a class="btn btn-large btn-block btn-primary" href="/teams/create">Form a New Team</a>
+        <hr />
     {% endif %}
     <div class="row">
         <div class="span12 box">
@@ -11,34 +12,29 @@
             {% if event.teams %}
                 <ul class="teamlist">
                     {% for team in event.teams %}
-                        <div class='team-container'>
-                            <h2 class='team_name'>
-                            <a href="/teams/details/{{ team.teamID }}">{{ team.name }}</a>
-                            </h2>
-
-                            {% for member in team.registrants %}
-                                <div class="userlisting">
-                                    <a href="/person/{{ member.registrantID }}">
-                                        {% if member.profile_image %}
-                                            <img alt="Thumb" src="{{ member.profile_image }}" />
-                                        {% else %}
-                                            <img alt="Thumb" src="/assets/img/default_user.png" />
-                                        {% endif %}
-
-                                        <div class="user_info">
-                                            <div class="real_name">
-                                                <span class='first_name'>
-                                                    {{ member.name }}
-                                                </span>
-                                            </div>
-                                            <div class="work">
-                                                {{ member.work }}
-                                            </div>
-                                        </div>
-                                    </a>
-                                </div>
-                            {% endfor %}
-                        </div>
+                        <li class="span3">
+                            <div class="thumbnail">
+                                <a href="/teams/details/{{ team.teamID }}">
+                                    {% if team.team_picture_url %}
+                                        <img src="{{ team.team_picture_url }}" alt="" />
+                                    {% endif %}
+                                    <h2>{{ team.name }}</h2>
+                                </a>
+                                <p>{{ team.short_description|nl2br }}</p>
+                                {% if team.website_link %}
+                                    <a class="btn btn-primary btn-block" href="{{ team.website_link }}" target="_blank">Project Website</a>
+                                {% endif %}
+                                {% if team.try_link %}
+                                    <a class="btn btn-primary btn-block" href="{{ team.try_link }}" target="_blank">Try</a>
+                                {% endif %}
+                                {% if team.video_link %}
+                                    <a class="btn btn-primary btn-block" href="{{ team.video_link }}" target="_blank">Video</a>
+                                {% endif %}
+                                {% if team.presentation_link %}
+                                    <a class="btn btn-primary btn-block" href="{{ team.presentation_link }}" target="_blank">Presentation</a>
+                                {% endif %}
+                            </div>
+                        </li>
                     {% endfor %}
                 </ul>
             {% else %}

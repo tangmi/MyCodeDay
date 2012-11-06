@@ -6,7 +6,7 @@
             <div class="span6 box">
                 <h1>Utilities</h1>
                 <ul>
-                    <li><a href="/admin/sms">Send SMS message</a></li>
+                    <li><a href="/admin/sms">Send SMS message ({{ event.textable_numbers_count }})</a></li>
                     <li><a href="/admin/sync">Sync with EventBrite</a></li>
                 </ul>
             </div>
@@ -48,7 +48,7 @@
                 <h1>Award Types</h1>
                 <ul>
                     {% for awardcategory in event.award_categories %}
-                        <li><a href="/admin/awardcategories/update?faqID={{ awardcategory.awardcategoryID }}">{{ awardcategory.name }}</a></li>
+                        <li><a href="/admin/awardcategories/update?awardcategoryID={{ awardcategory.awardcategoryID }}">{{ awardcategory.name }}</a></li>
                     {% endfor %}
                     <li><a href="/admin/awardcategories/create">Add New</a></li>
                 </ul>

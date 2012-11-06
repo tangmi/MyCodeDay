@@ -1,22 +1,18 @@
 <IfModule mod_rewrite.c>
     RewriteEngine On
+
     # CodeDay Global Page
-#    RewriteCond %{REQUEST_FILENAME} !-f
-#    RewriteCond %{HTTP_HOST} ^(www\.)?codeday\.org+$
-#    RewriteRule ^([\w\.]*)$ index.php/view/global/$1 [QSA,L]
-
-    # My.CodeDay - Not a thing yet...
-#    RewriteCond %{REQUEST_FILENAME} !-f
-#    RewriteCond %{HTTP_HOST} ^my\.codeday\.org+$
-#    RewriteRule ^(.*)$ index.php/my/$1 [QSA,L]
-
-    # Local.My.CodeDay
     RewriteCond %{REQUEST_FILENAME} !-f
-#    RewriteCond %{HTTP_HOST} ^local\.my\.codeday\.org+$
-    RewriteRule ^(.*)$ index.php/event/$1 [QSA,L]
+    RewriteCond %{HTTP_HOST} ^(www\.)?codeday\.org+$
+    RewriteRule ^([\w\.]*)$ index.php/view/global/$1 [QSA,L]
 
-    # Specific CodeDay
-#    RewriteCond %{REQUEST_FILENAME} !-f
-#    RewriteCond %{HTTP_HOST} ^([^.]+)\.codeday\.org+$
-#    RewriteRule ^(.*)/(.*)/([\w\.]*)$ index.php/view/$3?name=%1&month=$2&year=$1 [QSA,L]
+    # Specific City CodeDay
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{HTTP_HOST} ^([^.]+)\.([^.]+)\.([^.]+)\.codeday\.org+$
+    RewriteRule ^(.*)$ index.php/event/$1?cd_name=%3&cd_month=%1&cd_year=%2 [QSA,L]
+
+    # General City CodeDay
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{HTTP_HOST} ^([^.]+)\.codeday\.org+$
+    RewriteRule ^(.*)$ index.php/event/$1?cd_name=%1 [QSA,L]
 </IfModule>

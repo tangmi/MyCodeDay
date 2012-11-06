@@ -7,4 +7,5 @@ class Application
     // Used for global storage.
     static $twig;
     static $config;
+    static $event;
 }

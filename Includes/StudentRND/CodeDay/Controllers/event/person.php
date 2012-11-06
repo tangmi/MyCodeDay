@@ -46,7 +46,8 @@ class person extends Controllers\EventController
     public function __get_index()
     {
         if (Models\Registrant::is_logged_in() &&
-            (Models\Registrant::current() == $this->person || Models\Registrant::current()->is_organizer)) {
+            (Models\Registrant::current() == $this->person || Models\Registrant::current()->is_organizer) &&
+            !$this->request->get('preview')) {
             $instance = $this->person;
             include_once(TEMPLATE_DIR . '/form.php');
         } else {
@@ -78,6 +79,7 @@ class person extends Controllers\EventController
         if (Models\Registrant::current() != $this->person && !Models\Registrant::current()->is_organizer) {
             throw new \CuteControllers\HttpError(403);
         }
+
 
         if ($this->request->post('password') === $this->request->post('password_confirm')) {
             $this->person->password = $this->request->post('password');
