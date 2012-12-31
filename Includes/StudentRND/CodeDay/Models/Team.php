@@ -89,6 +89,15 @@ class Team extends \TinyDb\Orm
     }
     protected $website_link;
     public $__optional_website_link = TRUE;
+    public function __get_website_link()
+    {
+        //make sure that all links submitted are outward facing (includes a protocol)
+        $link = strtolower(trim($this->website_link));
+        if(!preg_match(/^[^:]+(?=:\/\/)/, $link)) {
+            $link .= 'http://';
+        }
+        return $link;
+    }
     protected $try_link;
     public $__optional_try_link = TRUE;
 
