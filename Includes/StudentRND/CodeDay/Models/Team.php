@@ -93,7 +93,7 @@ class Team extends \TinyDb\Orm
     {
         //make sure that all links submitted are outward facing (includes a protocol)
         $link = strtolower(trim($this->website_link));
-        if(!preg_match(/^[^:]+(?=:\/\/)/, $link)) {
+        if(!preg_match('/^[^:]+(?=:\/\/)/', $link)) {
             $link = 'http://' . $link;
         }
         return $link;
